@@ -2,28 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Utensils, ChefHat, Clock, ArrowRight } from "lucide-react";
 import suvamRestaurantImage from "@/assets/suvam-restaurant.jpg";
-
 const SuvamRestaurantSection = () => {
-  return (
-    <section className="py-20 bg-background">
+  return <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Suvam Restaurant
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Traditional flavors in a comfortable setting
-          </p>
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Layek's Resturant</h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Traditional flavors in a comfortable setting, only at Hotel Suvam</p>
         </div>
         
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="order-1">
             <div className="relative rounded-2xl overflow-hidden shadow-warm h-[400px] md:h-[500px]">
-              <img 
-                src={suvamRestaurantImage} 
-                alt="Suvam Restaurant"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
+              <img src={suvamRestaurantImage} alt="Suvam Restaurant" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
               <div className="absolute bottom-8 left-8 right-8">
                 <p className="text-primary-foreground text-lg font-medium">
@@ -85,17 +75,11 @@ const SuvamRestaurantSection = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
-                  <Button 
-                    className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group"
-                    onClick={() => window.open('/sample-menu.pdf', '_blank')}
-                  >
+                  <Button className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group" onClick={() => window.open('/sample-menu.pdf', '_blank')}>
                     View Full Menu
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
-                  <Button 
-                    variant="outline"
-                    className="w-full sm:flex-1 border-primary text-primary hover:bg-primary/10"
-                  >
+                  <Button variant="outline" className="w-full sm:flex-1 border-primary text-primary hover:bg-primary/10">
                     View Gallery
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -105,8 +89,6 @@ const SuvamRestaurantSection = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default SuvamRestaurantSection;
