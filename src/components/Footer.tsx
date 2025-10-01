@@ -1,4 +1,4 @@
-import { Hotel, Mail, Phone, MapPin } from "lucide-react";
+import { Flower, Mail, Phone, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -7,10 +7,10 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Hotel className="h-8 w-8 text-accent" />
+              <Flower className="h-8 w-8 text-accent" />
               <div>
-                <h3 className="font-serif text-xl font-bold">The Layeks</h3>
-                <p className="text-sm text-background/70">Est. 2010</p>
+                <h3 className="font-serif text-xl font-bold">The Layek's</h3>
+                <p className="text-sm text-background/70">Decades of Hospitality</p>
               </div>
             </div>
             <p className="text-background/80 text-sm">
@@ -61,7 +61,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-background/20 pt-8 text-center text-sm text-background/60">
-          <p>&copy; {new Date().getFullYear()} The Layeks. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} The Layek's. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -1,27 +1,43 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Utensils, ChefHat, Clock, ArrowRight } from "lucide-react";
-import laEkImage from "@/assets/la-ek.jpg";
+import suvamRestaurantImage from "@/assets/suvam-restaurant.jpg";
 
-const RestaurantSection = () => {
+const SuvamRestaurantSection = () => {
   return (
-    <section id="restaurant" className="py-20 bg-secondary">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
-            La Ek Essence
+            Suvam Restaurant
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Savor authentic flavors in a warm, rustic ambiance
+            Traditional flavors in a comfortable setting
           </p>
         </div>
         
         <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="order-2 md:order-1">
+          <div className="order-1">
+            <div className="relative rounded-2xl overflow-hidden shadow-warm h-[400px] md:h-[500px]">
+              <img 
+                src={suvamRestaurantImage} 
+                alt="Suvam Restaurant"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
+              <div className="absolute bottom-8 left-8 right-8">
+                <p className="text-primary-foreground text-lg font-medium">
+                  "Comfort food that feels like home"
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="order-2">
             <Card className="border-border shadow-soft">
               <CardContent className="p-8">
                 <h3 className="font-serif text-2xl font-bold text-foreground mb-6">
-                  Our Culinary Experience
+                  Our Dining Experience
                 </h3>
                 
                 <div className="space-y-6">
@@ -32,9 +48,9 @@ const RestaurantSection = () => {
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-foreground mb-2">Authentic Cuisine</h4>
+                      <h4 className="font-semibold text-foreground mb-2">Classic Dishes</h4>
                       <p className="text-sm text-muted-foreground">
-                        Traditional Indian dishes with a modern twist, prepared by expert chefs
+                        Time-tested recipes that our guests have loved for years
                       </p>
                     </div>
                   </div>
@@ -46,9 +62,9 @@ const RestaurantSection = () => {
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-foreground mb-2">Expert Chefs</h4>
+                      <h4 className="font-semibold text-foreground mb-2">Experienced Chefs</h4>
                       <p className="text-sm text-muted-foreground">
-                        Culinary masters bringing decades of experience to every dish
+                        Skilled culinary team dedicated to quality and consistency
                       </p>
                     </div>
                   </div>
@@ -87,26 +103,10 @@ const RestaurantSection = () => {
               </CardContent>
             </Card>
           </div>
-          
-          <div className="order-1 md:order-2">
-            <div className="relative rounded-2xl overflow-hidden shadow-warm h-[400px] md:h-[500px]">
-              <img 
-                src={laEkImage} 
-                alt="La Ek Essence Restaurant"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />
-              <div className="absolute bottom-8 left-8 right-8">
-                <p className="text-primary-foreground text-lg font-medium">
-                  "Where every meal becomes a cherished memory"
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default RestaurantSection;
+export default SuvamRestaurantSection;

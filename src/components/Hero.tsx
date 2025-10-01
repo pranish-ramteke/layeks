@@ -26,18 +26,18 @@ const Hero = () => {
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm text-lg px-8 py-6"
-            onClick={() => document.getElementById('suvam')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => document.getElementById('restaurant')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            Explore Our Hotels
+            View Restaurants
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button 
             size="lg" 
             variant="outline" 
             className="bg-background/20 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/30 text-lg px-8 py-6"
-            onClick={() => document.getElementById('restaurant')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => document.getElementById('suvam')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            View Restaurant
+            Explore Our Hotels
           </Button>
         </div>
       </div>

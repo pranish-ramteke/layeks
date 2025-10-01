@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import HotelCard from "@/components/HotelCard";
 import RestaurantSection from "@/components/RestaurantSection";
+import SuvamRestaurantSection from "@/components/SuvamRestaurantSection";
 import EventsSection from "@/components/EventsSection";
 import Footer from "@/components/Footer";
 import hotelSuvamImage from "@/assets/hotel-suvam.jpg";
@@ -13,8 +14,11 @@ const Index = () => {
       <Header />
       <Hero />
       
+      <RestaurantSection />
+      <SuvamRestaurantSection />
+      
       {/* Hotels Section */}
-      <section className="py-20 bg-background">
+      <section id="suvam" className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -25,7 +29,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div id="suvam" className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             <HotelCard
               name="Hotel Suvam"
               tagline="Your Trusted Home Since 2010"
@@ -56,7 +60,6 @@ const Index = () => {
         </div>
       </section>
       
-      <RestaurantSection />
       <EventsSection />
       <Footer />
     </div>
