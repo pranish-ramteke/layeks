@@ -35,7 +35,7 @@ const SuvamRestaurantSection = () => {
           
           <div className="order-2">
             <Card className="border-border shadow-soft">
-              <CardContent className="p-8">
+              <CardContent className="p-6 sm:p-8">
                 <h3 className="font-serif text-2xl font-bold text-foreground mb-6">
                   Our Dining Experience
                 </h3>
@@ -84,9 +84,9 @@ const SuvamRestaurantSection = () => {
                   </div>
                 </div>
                 
-                <div className="flex gap-4 mt-8">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
                   <Button 
-                    className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group"
+                    className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group"
                     onClick={() => window.open('/sample-menu.pdf', '_blank')}
                   >
                     View Full Menu
@@ -94,7 +94,7 @@ const SuvamRestaurantSection = () => {
                   </Button>
                   <Button 
                     variant="outline"
-                    className="flex-1 border-primary text-primary hover:bg-primary/10"
+                    className="w-full sm:flex-1 border-primary text-primary hover:bg-primary/10"
                   >
                     View Gallery
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />

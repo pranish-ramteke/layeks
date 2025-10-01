@@ -17,7 +17,7 @@ const EventsSection = () => {
         
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           <Card className="border-border shadow-soft hover:shadow-warm transition-all duration-300">
-            <CardContent className="p-8 text-center">
+            <CardContent className="p-6 sm:p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Calendar className="h-8 w-8 text-primary" />
               </div>
@@ -29,7 +29,7 @@ const EventsSection = () => {
           </Card>
           
           <Card className="border-border shadow-soft hover:shadow-warm transition-all duration-300">
-            <CardContent className="p-8 text-center">
+            <CardContent className="p-6 sm:p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Users className="h-8 w-8 text-primary" />
               </div>
@@ -41,7 +41,7 @@ const EventsSection = () => {
           </Card>
           
           <Card className="border-border shadow-soft hover:shadow-warm transition-all duration-300">
-            <CardContent className="p-8 text-center">
+            <CardContent className="p-6 sm:p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <PartyPopper className="h-8 w-8 text-primary" />
               </div>
@@ -55,7 +55,7 @@ const EventsSection = () => {
         
         <div className="max-w-xl mx-auto text-center">
           <Card className="border-primary/20 shadow-warm bg-gradient-card">
-            <CardContent className="p-8">
+            <CardContent className="p-6 sm:p-8">
               <h3 className="font-serif text-2xl font-bold text-foreground mb-4">
                 Ready to Plan Your Event?
               </h3>

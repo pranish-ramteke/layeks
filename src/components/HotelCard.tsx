@@ -28,13 +28,13 @@ const HotelCard = ({ name, tagline, description, image, features, isNew }: Hotel
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
       </div>
       
-      <CardContent className="p-8 bg-gradient-card">
+      <CardContent className="p-6 sm:p-8 bg-gradient-card">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="font-serif text-3xl font-bold text-foreground mb-2">{name}</h3>
-            <p className="text-primary font-medium">{tagline}</p>
+            <h3 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-2">{name}</h3>
+            <p className="text-sm md:text-base text-primary font-medium">{tagline}</p>
           </div>
-          <Building2 className="h-8 w-8 text-primary" />
+          <Building2 className="h-6 w-6 md:h-8 md:w-8 text-primary flex-shrink-0" />
         </div>
         
         <p className="text-muted-foreground mb-6 leading-relaxed">{description}</p>

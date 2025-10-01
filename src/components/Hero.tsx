@@ -25,16 +25,16 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
           <Button 
             size="lg" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm text-lg px-8 py-6"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
             onClick={() => document.getElementById('restaurant')?.scrollIntoView({ behavior: 'smooth' })}
           >
             View Restaurants
-            <ArrowRight className="ml-2 h-5 w-5" />
+            <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
           <Button 
             size="lg" 
             variant="outline" 
-            className="bg-background/20 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/30 text-lg px-8 py-6"
+            className="bg-background/20 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/30 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
             onClick={() => document.getElementById('suvam')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Explore Our Hotels
