@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Utensils, ChefHat, Clock, ArrowRight } from "lucide-react";
-import restaurantAmbiance from "@/assets/restaurant-ambiance.jpg";
+import laEkImage from "@/assets/la-ek.jpg";
 
 const RestaurantSection = () => {
   return (
@@ -9,7 +9,7 @@ const RestaurantSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Atithi Restaurant
+            La Ek Essence
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Savor authentic flavors in a warm, rustic ambiance
@@ -68,7 +68,10 @@ const RestaurantSection = () => {
                   </div>
                 </div>
                 
-                <Button className="w-full mt-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group">
+                <Button 
+                  className="w-full mt-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group"
+                  onClick={() => window.open('/sample-menu.pdf', '_blank')}
+                >
                   View Full Menu
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -79,8 +82,8 @@ const RestaurantSection = () => {
           <div className="order-1 md:order-2">
             <div className="relative rounded-2xl overflow-hidden shadow-warm h-[400px] md:h-[500px]">
               <img 
-                src={restaurantAmbiance} 
-                alt="Atithi Restaurant"
+                src={laEkImage} 
+                alt="La Ek Essence Restaurant"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent" />

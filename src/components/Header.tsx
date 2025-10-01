@@ -8,8 +8,8 @@ const Header = () => {
         <div className="flex items-center gap-2">
           <Hotel className="h-8 w-8 text-primary" />
           <div>
-            <h1 className="font-serif text-xl font-bold text-foreground">Suvam & Atithi</h1>
-            <p className="text-xs text-muted-foreground">Hospitality Since 1995</p>
+            <h1 className="font-serif text-xl font-bold text-foreground">The Layeks</h1>
+            <p className="text-xs text-muted-foreground">Decades of Hospitality</p>
           </div>
         </div>
         

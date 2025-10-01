@@ -1,19 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import heroHotel from "@/assets/hero-hotel.jpg";
+import landingImage from "@/assets/landing-image.jpg";
 
 const Hero = () => {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       <div 
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroHotel})` }}
+        style={{ backgroundImage: `url(${landingImage})` }}
       />
       <div className="absolute inset-0 bg-gradient-hero" />
       
       <div className="relative z-10 container mx-auto px-4 text-center">
         <h1 className="font-serif text-5xl md:text-7xl font-bold text-primary-foreground mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-          Welcome to Suvam & Atithi
+          The Layek's
         </h1>
         <p className="text-xl md:text-2xl text-primary-foreground/90 mb-4 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
           Experience the warmth of Indian hospitality in Durgapur
@@ -26,6 +26,7 @@ const Hero = () => {
           <Button 
             size="lg" 
             className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm text-lg px-8 py-6"
+            onClick={() => document.getElementById('suvam')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Explore Our Hotels
             <ArrowRight className="ml-2 h-5 w-5" />
@@ -34,6 +35,7 @@ const Hero = () => {
             size="lg" 
             variant="outline" 
             className="bg-background/20 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/30 text-lg px-8 py-6"
+            onClick={() => document.getElementById('restaurant')?.scrollIntoView({ behavior: 'smooth' })}
           >
             View Restaurant
           </Button>

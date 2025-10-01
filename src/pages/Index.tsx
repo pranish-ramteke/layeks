@@ -4,8 +4,8 @@ import HotelCard from "@/components/HotelCard";
 import RestaurantSection from "@/components/RestaurantSection";
 import EventsSection from "@/components/EventsSection";
 import Footer from "@/components/Footer";
-import roomPreview from "@/assets/room-preview.jpg";
-import heroHotel from "@/assets/hero-hotel.jpg";
+import hotelSuvamImage from "@/assets/hotel-suvam.jpg";
+import hotelAtithiImage from "@/assets/hotel-atithi.jpg";
 
 const Index = () => {
   return (
@@ -28,9 +28,9 @@ const Index = () => {
           <div id="suvam" className="grid md:grid-cols-2 gap-8 mb-8">
             <HotelCard
               name="Hotel Suvam"
-              tagline="Your Trusted Home Since 1995"
+              tagline="Your Trusted Home Since 2010"
               description="Experience time-tested hospitality at our established property. Hotel Suvam offers comfortable accommodations with modern amenities while maintaining its classic charm."
-              image={heroHotel}
+              image={hotelSuvamImage}
               features={[
                 "45 Well-appointed rooms",
                 "24/7 Room Service",
@@ -43,7 +43,7 @@ const Index = () => {
               name="Hotel Atithi"
               tagline="Modern Comfort, Traditional Warmth"
               description="Discover our newest property that blends contemporary design with warm Indian hospitality. Perfect for both business and leisure travelers."
-              image={roomPreview}
+              image={hotelAtithiImage}
               features={[
                 "35 Modern rooms with city views",
                 "State-of-the-art facilities",

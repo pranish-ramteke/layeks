@@ -9,8 +9,8 @@ const Footer = () => {
             <div className="flex items-center gap-2 mb-4">
               <Hotel className="h-8 w-8 text-accent" />
               <div>
-                <h3 className="font-serif text-xl font-bold">Suvam & Atithi</h3>
-                <p className="text-sm text-background/70">Est. 1995</p>
+                <h3 className="font-serif text-xl font-bold">The Layeks</h3>
+                <p className="text-sm text-background/70">Est. 2010</p>
               </div>
             </div>
             <p className="text-background/80 text-sm">
@@ -61,7 +61,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-background/20 pt-8 text-center text-sm text-background/60">
-          <p>&copy; {new Date().getFullYear()} Hotel Suvam & Atithi. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} The Layeks. All rights reserved.</p>
         </div>
       </div>
     </footer>
