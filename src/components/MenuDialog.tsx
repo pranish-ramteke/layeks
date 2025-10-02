@@ -13,7 +13,7 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -21,18 +21,39 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
   }, []);
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/sample-menu.pdf';
-    link.download = 'menu.pdf';
+    const link = document.createElement("a");
+    link.href = "/sample-menu.pdf";
+    link.download = "menu.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const pdfUrl = window.location.origin + '/sample-menu.pdf';
-  const viewerUrl = isMobile 
-    ? `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`
+  // On mobile: download instead of showing a viewer
+  useEffect(() => {
+    if (open && isMobile) {
+      try {
+        // Trigger download and immediately close the dialog
+        const link = document.createElement("a");
+        link.href = "/sample-menu.pdf";
+        link.download = "menu.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } finally {
+        onOpenChange(false);
+      }
+    }
+  }, [open, isMobile]);
+  // Use Mozilla PDF.js for mobile, iframe with params for desktop
+  const pdfUrl = isMobile 
+    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(window.location.origin + '/sample-menu.pdf')}`
     : `/sample-menu.pdf#toolbar=0&navpanes=0&scrollbar=0`;
+
+  if (isMobile) {
+    // Do not render dialog on mobile; download is handled in the effect above
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -58,7 +79,7 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
           </Button>
         </div>
         <iframe
-          src={viewerUrl}
+          src={pdfUrl}
           className="w-full h-full border-0"
           title="Restaurant Menu"
         />
