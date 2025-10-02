@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import landingImage from "@/assets/landing-image.jpg";
+import landingImageMobile from "@/assets/landing-image-mobile.jpg";
+
 const Hero = () => {
   return <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center" style={{
+      <div className="absolute inset-0 bg-cover bg-center md:block hidden" style={{
       backgroundImage: `url(${landingImage})`
+    }} />
+      <div className="absolute inset-0 bg-cover bg-center md:hidden block" style={{
+      backgroundImage: `url(${landingImageMobile})`
     }} />
       <div className="absolute inset-0 bg-gradient-hero" />
       

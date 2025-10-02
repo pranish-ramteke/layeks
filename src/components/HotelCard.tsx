@@ -14,7 +14,7 @@ interface HotelCardProps {
 const HotelCard = ({ name, tagline, description, image, features, isNew }: HotelCardProps) => {
   return (
     <Card className="overflow-hidden hover:shadow-warm transition-all duration-500 border-border group">
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative h-80 md:h-96 overflow-hidden">
         <img 
           src={image} 
           alt={name}

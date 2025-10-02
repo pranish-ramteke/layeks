@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Utensils, ChefHat, Clock, ArrowRight } from "lucide-react";
 import laEkImage from "@/assets/la-ek.jpg";
+import MenuDialog from "@/components/MenuDialog";
+
 const RestaurantSection = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  
   return <section id="restaurant" className="py-20 bg-secondary">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
@@ -63,7 +68,7 @@ const RestaurantSection = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
-                  <Button className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group" onClick={() => window.open('/sample-menu.pdf', '_blank')}>
+                  <Button className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group" onClick={() => setMenuOpen(true)}>
                     View Full Menu
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -89,6 +94,7 @@ const RestaurantSection = () => {
           </div>
         </div>
       </div>
+      <MenuDialog open={menuOpen} onOpenChange={setMenuOpen} />
     </section>;
 };
 export default RestaurantSection;
