@@ -1,6 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, Download } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface MenuDialogProps {
   open: boolean;
@@ -8,6 +9,17 @@ interface MenuDialogProps {
 }
 
 const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = '/sample-menu.pdf';
@@ -16,6 +28,11 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
     link.click();
     document.body.removeChild(link);
   };
+
+  const pdfUrl = window.location.origin + '/sample-menu.pdf';
+  const viewerUrl = isMobile 
+    ? `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`
+    : `/sample-menu.pdf#toolbar=0&navpanes=0&scrollbar=0`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -41,7 +58,7 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
           </Button>
         </div>
         <iframe
-          src="/sample-menu.pdf#toolbar=0&navpanes=0&scrollbar=0"
+          src={viewerUrl}
           className="w-full h-full border-0"
           title="Restaurant Menu"
         />
