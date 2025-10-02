@@ -29,10 +29,31 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
     document.body.removeChild(link);
   };
 
+  // On mobile: download instead of showing a viewer
+  useEffect(() => {
+    if (open && isMobile) {
+      try {
+        // Trigger download and immediately close the dialog
+        const link = document.createElement("a");
+        link.href = "/sample-menu.pdf";
+        link.download = "menu.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } finally {
+        onOpenChange(false);
+      }
+    }
+  }, [open, isMobile]);
   // Use Mozilla PDF.js for mobile, iframe with params for desktop
   const pdfUrl = isMobile 
     ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(window.location.origin + '/sample-menu.pdf')}`
     : `/sample-menu.pdf#toolbar=0&navpanes=0&scrollbar=0`;
+
+  if (isMobile) {
+    // Do not render dialog on mobile; download is handled in the effect above
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

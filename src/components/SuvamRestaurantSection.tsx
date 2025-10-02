@@ -7,6 +7,20 @@ import MenuDialog from "@/components/MenuDialog";
 
 const SuvamRestaurantSection = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleViewMenuClick = () => {
+    const isMobile = window.innerWidth < 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      const link = document.createElement("a");
+      link.href = "/sample-menu.pdf";
+      link.download = "menu.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return;
+    }
+    setMenuOpen(true);
+  };
   
   return <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -80,7 +94,7 @@ const SuvamRestaurantSection = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
-                  <Button className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group" onClick={() => setMenuOpen(true)}>
+                  <Button className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm group" onClick={handleViewMenuClick}>
                     View Full Menu
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
