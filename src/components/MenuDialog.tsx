@@ -19,12 +19,12 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0">
+      <DialogContent className="max-w-4xl h-[90vh] w-[95vw] p-0 gap-0 overflow-hidden">
         <div className="absolute top-2 right-2 z-50 flex gap-2">
           <Button
             variant="secondary"
             size="icon"
-            className="h-10 w-10 rounded-full shadow-lg"
+            className="h-10 w-10 rounded-full shadow-lg bg-background hover:bg-background/90"
             onClick={handleDownload}
           >
             <Download className="h-5 w-5" />
@@ -33,7 +33,7 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
           <Button
             variant="secondary"
             size="icon"
-            className="h-10 w-10 rounded-full shadow-lg"
+            className="h-10 w-10 rounded-full shadow-lg bg-background hover:bg-background/90"
             onClick={() => onOpenChange(false)}
           >
             <X className="h-5 w-5" />
@@ -41,8 +41,8 @@ const MenuDialog = ({ open, onOpenChange }: MenuDialogProps) => {
           </Button>
         </div>
         <iframe
-          src="/sample-menu.pdf"
-          className="w-full h-full rounded-lg"
+          src="/sample-menu.pdf#toolbar=0&navpanes=0&scrollbar=0"
+          className="w-full h-full border-0"
           title="Restaurant Menu"
         />
       </DialogContent>
