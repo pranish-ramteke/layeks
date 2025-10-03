@@ -1,5 +1,5 @@
 import { Mail, Phone, MapPin } from "lucide-react";
-import layeksLogo from "@/assets/layeks-logo.jpg";
+import layeksLogo from "@/assets/layeks-logo-2.jpg";
 
 const Footer = () => {
   return (
