@@ -1,8 +1,46 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Flower, Phone, Menu } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Flower, Phone, Menu, LogOut, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 const Header = () => {
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logged out successfully",
+      description: "You have been signed out.",
+    });
+    navigate("/");
+  };
+
+  const getUserInitials = () => {
+    if (!user) return "U";
+    const email = user.email || "";
+    return email.charAt(0).toUpperCase();
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft">
       <nav className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
@@ -31,16 +69,44 @@ const Header = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          {/* Desktop Book Button */}
-          <Button className="hidden sm:flex bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm transition-all duration-300">
-            <Phone className="mr-2 h-4 w-4" />
-            Book Now
-          </Button>
-          
-          {/* Mobile Book Button */}
-          <Button size="sm" className="flex sm:hidden bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm">
-            <Phone className="h-4 w-4" />
-          </Button>
+          {/* User Profile or Book Button */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {getUserInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem disabled className="flex-col items-start">
+                  <div className="font-medium">{user.user_metadata?.full_name || "User"}</div>
+                  <div className="text-xs text-muted-foreground">{user.email}</div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              {/* Desktop Book Button */}
+              <Button className="hidden sm:flex bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm transition-all duration-300">
+                <Phone className="mr-2 h-4 w-4" />
+                Book Now
+              </Button>
+              
+              {/* Mobile Book Button */}
+              <Button size="sm" className="flex sm:hidden bg-primary hover:bg-primary/90 text-primary-foreground shadow-warm">
+                <Phone className="h-4 w-4" />
+              </Button>
+            </>
+          )}
           
           {/* Mobile Menu */}
           <Sheet>
