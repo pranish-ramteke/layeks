@@ -142,7 +142,24 @@ export default function HotelDetails() {
           description: "Please sign in to continue with booking",
           variant: "destructive",
         });
-        navigate("/auth");
+        navigate("/auth", {
+          state: {
+            postAuthAction: {
+              type: "createBooking",
+              payload: {
+                hotelId,
+                roomTypeId,
+                checkIn: format(dateRange!.from, "yyyy-MM-dd"),
+                checkOut: format(dateRange!.to, "yyyy-MM-dd"),
+                guests,
+                numNights: bookingState.numNights,
+                roomRate: roomType.base_price_per_night,
+                taxes: bookingState.taxes,
+                totalAmount: bookingState.totalAmount,
+              },
+            },
+          },
+        });
         return;
       }
 

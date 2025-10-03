@@ -18,18 +18,80 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const processPostAuthIfAny = async (): Promise<boolean> => {
+    try {
+      const stored = localStorage.getItem("postAuthAction");
+      if (!stored) return false;
+      const post = JSON.parse(stored);
+      if (post?.type !== "createBooking") return false;
+
+      setIsLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      const bookingRef = `BK-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+      const { data: booking, error } = await supabase
+        .from("bookings")
+        .insert({
+          booking_reference: bookingRef,
+          user_id: user.id,
+          hotel_id: post.payload.hotelId,
+          room_type_id: post.payload.roomTypeId,
+          check_in_date: post.payload.checkIn,
+          check_out_date: post.payload.checkOut,
+          num_guests: post.payload.guests,
+          num_nights: post.payload.numNights,
+          room_rate: post.payload.roomRate,
+          taxes: post.payload.taxes,
+          total_amount: post.payload.totalAmount,
+          status: "pending",
+          payment_status: "pending",
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      localStorage.removeItem("postAuthAction");
+      navigate(`/booking/${booking.id}/summary`);
+      return true;
+    } catch (error) {
+      console.error("Post-auth booking failed:", error);
+      toast({
+        title: "Booking continuation failed",
+        description: getSafeErrorMessage(error),
+        variant: "destructive",
+      });
+      localStorage.removeItem("postAuthAction");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Check if user is already logged in
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const from = (location.state as any)?.from || "/";
-        navigate(from);
+        const handled = await processPostAuthIfAny();
+        if (!handled) {
+          const from = (location.state as any)?.from || "/";
+          navigate(from);
+        }
       }
     };
     checkUser();
   }, [navigate, location]);
 
+  // Persist any post-auth action from router state (survives OAuth redirects)
+  useEffect(() => {
+    const state = location.state as any;
+    if (state?.postAuthAction) {
+      localStorage.setItem("postAuthAction", JSON.stringify(state.postAuthAction));
+    }
+  }, [location.state]);
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -55,8 +117,11 @@ const Auth = () => {
           description: "Your account has been created successfully.",
         });
 
-        const from = (location.state as any)?.from || "/";
-        navigate(from);
+        const handled = await processPostAuthIfAny();
+        if (!handled) {
+          const from = (location.state as any)?.from || "/";
+          navigate(from);
+        }
       } else {
         // Email confirmation required
         toast({
@@ -92,8 +157,11 @@ const Auth = () => {
         description: "You have successfully signed in.",
       });
 
-      const from = (location.state as any)?.from || "/";
-      navigate(from);
+      const handled = await processPostAuthIfAny();
+      if (!handled) {
+        const from = (location.state as any)?.from || "/";
+        navigate(from);
+      }
     } catch (error) {
       toast({
         title: "Sign in failed",
