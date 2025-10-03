@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { getSafeErrorMessage } from "@/lib/errorUtils";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -35,7 +36,7 @@ const Hotels = () => {
   const fetchHotels = async () => {
     const { data, error } = await supabase.from('hotels').select('*').order('name');
     if (error) {
-      toast({ title: "Error loading hotels", description: error.message, variant: "destructive" });
+      toast({ title: "Error loading hotels", description: getSafeErrorMessage(error), variant: "destructive" });
     } else {
       setHotels(data || []);
     }
@@ -55,7 +56,7 @@ const Hotels = () => {
         .eq('id', editingHotel.id);
       
       if (error) {
-        toast({ title: "Error updating hotel", description: error.message, variant: "destructive" });
+        toast({ title: "Error updating hotel", description: getSafeErrorMessage(error), variant: "destructive" });
       } else {
         toast({ title: "Hotel updated successfully" });
         fetchHotels();
@@ -65,7 +66,7 @@ const Hotels = () => {
       const { error } = await supabase.from('hotels').insert(formData);
       
       if (error) {
-        toast({ title: "Error creating hotel", description: error.message, variant: "destructive" });
+        toast({ title: "Error creating hotel", description: getSafeErrorMessage(error), variant: "destructive" });
       } else {
         toast({ title: "Hotel created successfully" });
         fetchHotels();
@@ -80,7 +81,7 @@ const Hotels = () => {
     const { error } = await supabase.from('hotels').delete().eq('id', id);
     
     if (error) {
-      toast({ title: "Error deleting hotel", description: error.message, variant: "destructive" });
+      toast({ title: "Error deleting hotel", description: getSafeErrorMessage(error), variant: "destructive" });
     } else {
       toast({ title: "Hotel deleted successfully" });
       fetchHotels();

@@ -10,6 +10,31 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CreditCard, Smartphone, Banknote, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+import { getSafeErrorMessage, validateLuhn } from "@/lib/errorUtils";
+
+// Validation schemas for payment inputs
+const upiSchema = z.object({
+  upiId: z.string()
+    .min(3, "UPI ID must be at least 3 characters")
+    .max(100, "UPI ID is too long")
+    .regex(/^[\w.\-]+@[\w]+$/, "Invalid UPI ID format (e.g., user@bank)"),
+});
+
+const cardSchema = z.object({
+  cardNumber: z.string()
+    .regex(/^\d{13,19}$/, "Card number must be 13-19 digits")
+    .refine(validateLuhn, "Invalid card number"),
+  cardExpiry: z.string()
+    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Expiry must be in MM/YY format")
+    .refine((val) => {
+      const [month, year] = val.split('/').map(Number);
+      const expiry = new Date(2000 + year, month - 1);
+      return expiry > new Date();
+    }, "Card has expired"),
+  cvv: z.string()
+    .regex(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
+});
 
 export default function Payment() {
   const { bookingId } = useParams();
@@ -43,10 +68,9 @@ export default function Payment() {
       if (error) throw error;
       setBooking(data);
     } catch (error: any) {
-      console.error("Error fetching booking:", error);
       toast({
         title: "Error",
-        description: "Failed to load booking details",
+        description: getSafeErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -55,30 +79,55 @@ export default function Payment() {
   };
 
   const handlePayment = async () => {
+    // Validate inputs based on payment method
+    try {
+      if (paymentMethod === "UPI") {
+        const result = upiSchema.safeParse({ upiId: upiId.trim() });
+        if (!result.success) {
+          toast({
+            title: "Validation Error",
+            description: result.error.errors[0].message,
+            variant: "destructive",
+          });
+          return;
+        }
+      } else if (paymentMethod === "Credit" || paymentMethod === "Debit") {
+        const result = cardSchema.safeParse({
+          cardNumber: cardNumber.replace(/\s/g, ''),
+          cardExpiry: cardExpiry.trim(),
+          cvv: cardCvv.trim(),
+        });
+        if (!result.success) {
+          toast({
+            title: "Validation Error",
+            description: result.error.errors[0].message,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    } catch (validationError) {
+      toast({
+        title: "Validation Error",
+        description: "Please check your payment details and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setProcessing(true);
 
-      // Validate payment method inputs
-      if (paymentMethod === "UPI" && !upiId) {
-        toast({
-          title: "Missing UPI ID",
-          description: "Please enter your UPI ID",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if ((paymentMethod === "Credit" || paymentMethod === "Debit") && (!cardNumber || !cardExpiry || !cardCvv)) {
-        toast({
-          title: "Missing card details",
-          description: "Please enter all card details",
-          variant: "destructive",
-        });
-        return;
-      }
-
       // Create payment record
       const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      
+      // Sanitize and limit data stored in payment_details
+      const paymentDetails = paymentMethod === "UPI"
+        ? { upiId: upiId.trim().slice(0, 100) }
+        : {
+            cardLast4: cardNumber.replace(/\s/g, '').slice(-4),
+            cardType: paymentMethod === "Credit" ? "Credit Card" : "Debit Card",
+          };
       
       const { error: paymentError } = await supabase
         .from("payments")
@@ -88,13 +137,7 @@ export default function Payment() {
           payment_method: paymentMethod,
           payment_status: paymentMethod === "Cash" ? "pending" : "success",
           transaction_id: transactionId,
-          payment_details: {
-            method: paymentMethod,
-            ...(paymentMethod === "UPI" && { upiId }),
-            ...(paymentMethod !== "UPI" && paymentMethod !== "Cash" && { 
-              cardLast4: cardNumber.slice(-4) 
-            }),
-          },
+          payment_details: paymentDetails,
         });
 
       if (paymentError) throw paymentError;
@@ -117,10 +160,9 @@ export default function Payment() {
 
       navigate(`/booking/${bookingId}/confirmation`);
     } catch (error: any) {
-      console.error("Error processing payment:", error);
       toast({
         title: "Payment failed",
-        description: "Failed to process payment. Please try again.",
+        description: getSafeErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -225,6 +267,7 @@ export default function Payment() {
                     placeholder="yourname@upi"
                     value={upiId}
                     onChange={(e) => setUpiId(e.target.value)}
+                    maxLength={100}
                   />
                 </div>
               </div>
@@ -269,7 +312,7 @@ export default function Payment() {
                       placeholder="123"
                       value={cardCvv}
                       onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, ""))}
-                      maxLength={3}
+                      maxLength={4}
                     />
                   </div>
                 </div>

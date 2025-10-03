@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { getSafeErrorMessage } from "@/lib/errorUtils";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
@@ -32,7 +33,7 @@ const Bookings = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      toast({ title: "Error loading bookings", description: error.message, variant: "destructive" });
+      toast({ title: "Error loading bookings", description: getSafeErrorMessage(error), variant: "destructive" });
     } else {
       setBookings(data || []);
     }
@@ -49,7 +50,7 @@ const Bookings = () => {
       .eq('id', bookingId);
 
     if (error) {
-      toast({ title: "Error updating booking", description: error.message, variant: "destructive" });
+      toast({ title: "Error updating booking", description: getSafeErrorMessage(error), variant: "destructive" });
     } else {
       toast({ title: "Booking status updated" });
       fetchBookings();

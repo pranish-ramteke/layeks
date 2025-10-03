@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { User, Mail, Phone, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getSafeErrorMessage } from "@/lib/errorUtils";
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters").max(100),
@@ -61,7 +62,7 @@ export default function GuestInfo() {
       console.error("Error saving guest info:", error);
       toast({
         title: "Error",
-        description: "Failed to save guest information",
+        description: getSafeErrorMessage(error),
         variant: "destructive",
       });
     } finally {

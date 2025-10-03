@@ -13,6 +13,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { MapPin, Phone, Mail, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getSafeErrorMessage } from "@/lib/errorUtils";
 
 export default function HotelDetails() {
   const { hotelId } = useParams();
@@ -63,7 +64,7 @@ export default function HotelDetails() {
       console.error("Error fetching hotel data:", error);
       toast({
         title: "Error",
-        description: "Failed to load hotel details",
+        description: getSafeErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -155,7 +156,7 @@ export default function HotelDetails() {
       console.error("Error creating booking:", error);
       toast({
         title: "Error",
-        description: "Failed to create booking",
+        description: getSafeErrorMessage(error),
         variant: "destructive",
       });
     }

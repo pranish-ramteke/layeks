@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { getSafeErrorMessage } from "@/lib/errorUtils";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -46,13 +47,13 @@ const RoomTypes = () => {
     ]);
 
     if (roomTypesRes.error) {
-      toast({ title: "Error loading room types", description: roomTypesRes.error.message, variant: "destructive" });
+      toast({ title: "Error loading room types", description: getSafeErrorMessage(roomTypesRes.error), variant: "destructive" });
     } else {
       setRoomTypes(roomTypesRes.data || []);
     }
 
     if (hotelsRes.error) {
-      toast({ title: "Error loading hotels", description: hotelsRes.error.message, variant: "destructive" });
+      toast({ title: "Error loading hotels", description: getSafeErrorMessage(hotelsRes.error), variant: "destructive" });
     } else {
       setHotels(hotelsRes.data || []);
     }
@@ -80,7 +81,7 @@ const RoomTypes = () => {
         .eq('id', editingRoomType.id);
       
       if (error) {
-        toast({ title: "Error updating room type", description: error.message, variant: "destructive" });
+        toast({ title: "Error updating room type", description: getSafeErrorMessage(error), variant: "destructive" });
       } else {
         toast({ title: "Room type updated successfully" });
         fetchData();
@@ -90,7 +91,7 @@ const RoomTypes = () => {
       const { error } = await supabase.from('room_types').insert(submitData);
       
       if (error) {
-        toast({ title: "Error creating room type", description: error.message, variant: "destructive" });
+        toast({ title: "Error creating room type", description: getSafeErrorMessage(error), variant: "destructive" });
       } else {
         toast({ title: "Room type created successfully" });
         fetchData();
@@ -105,7 +106,7 @@ const RoomTypes = () => {
     const { error } = await supabase.from('room_types').delete().eq('id', id);
     
     if (error) {
-      toast({ title: "Error deleting room type", description: error.message, variant: "destructive" });
+      toast({ title: "Error deleting room type", description: getSafeErrorMessage(error), variant: "destructive" });
     } else {
       toast({ title: "Room type deleted successfully" });
       fetchData();
