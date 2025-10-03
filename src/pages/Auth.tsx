@@ -35,7 +35,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -48,14 +48,22 @@ const Auth = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Account created successfully!",
-        description: "You can now sign in with your credentials.",
-      });
+      // Check if user is immediately logged in (auto-confirm is enabled)
+      if (data.session) {
+        toast({
+          title: "Welcome!",
+          description: "Your account has been created successfully.",
+        });
 
-      // Switch to sign in tab
-      const signInTab = document.querySelector('[value="signin"]') as HTMLElement;
-      signInTab?.click();
+        const from = (location.state as any)?.from || "/";
+        navigate(from);
+      } else {
+        // Email confirmation required
+        toast({
+          title: "Account created!",
+          description: "Please check your email to confirm your account.",
+        });
+      }
     } catch (error) {
       toast({
         title: "Sign up failed",
