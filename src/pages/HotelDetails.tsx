@@ -106,21 +106,48 @@ export default function HotelDetails() {
       return;
     }
 
-    setCheckingAvailability(true);
-    updateBooking({
-      hotelId,
-      numGuests: guests,
-    });
-    
-    // Simulate checking availability
-    setTimeout(() => {
-      setCheckingAvailability(false);
-      setShowRooms(true);
-      toast({
-        title: "Rooms available!",
-        description: "Here are the available room types for your dates",
+    try {
+      setCheckingAvailability(true);
+      updateBooking({
+        hotelId,
+        numGuests: guests,
       });
-    }, 1000);
+      
+      // Call check-availability edge function
+      const { data, error } = await supabase.functions.invoke("check-availability", {
+        body: {
+          hotel_id: hotelId,
+          check_in_date: format(dateRange.from, "yyyy-MM-dd"),
+          check_out_date: format(dateRange.to, "yyyy-MM-dd"),
+          num_guests: guests,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.available && data.room_types.length > 0) {
+        setShowRooms(true);
+        toast({
+          title: "Rooms available!",
+          description: `Found ${data.room_types.length} available room type(s) for your dates`,
+        });
+      } else {
+        toast({
+          title: "No rooms available",
+          description: "Sorry, no rooms are available for the selected dates",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error checking availability:", error);
+      toast({
+        title: "Error",
+        description: getSafeErrorMessage(error),
+        variant: "destructive",
+      });
+    } finally {
+      setCheckingAvailability(false);
+    }
   };
 
   const handleReserve = async (roomTypeId: string) => {
@@ -132,7 +159,6 @@ export default function HotelDetails() {
       roomRate: roomType.base_price_per_night,
     });
 
-    // Create a booking record
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -149,8 +175,8 @@ export default function HotelDetails() {
               payload: {
                 hotelId,
                 roomTypeId,
-                checkIn: format(dateRange!.from, "yyyy-MM-dd"),
-                checkOut: format(dateRange!.to, "yyyy-MM-dd"),
+                checkIn: format(dateRange!.from!, "yyyy-MM-dd"),
+                checkOut: format(dateRange!.to!, "yyyy-MM-dd"),
                 guests,
                 numNights: bookingState.numNights,
                 roomRate: roomType.base_price_per_night,
@@ -163,31 +189,25 @@ export default function HotelDetails() {
         return;
       }
 
-      const bookingRef = `BK-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      
-      const { data: booking, error } = await supabase
-        .from("bookings")
-        .insert({
-          booking_reference: bookingRef,
-          user_id: user.id,
-          hotel_id: hotelId!,
+      // Call create-booking edge function
+      const { data, error } = await supabase.functions.invoke("create-booking", {
+        body: {
+          hotel_id: hotelId,
           room_type_id: roomTypeId,
-          check_in_date: format(dateRange!.from, "yyyy-MM-dd"),
-          check_out_date: format(dateRange!.to, "yyyy-MM-dd"),
+          check_in_date: format(dateRange!.from!, "yyyy-MM-dd"),
+          check_out_date: format(dateRange!.to!, "yyyy-MM-dd"),
           num_guests: guests,
-          num_nights: bookingState.numNights,
-          room_rate: roomType.base_price_per_night,
-          taxes: bookingState.taxes,
-          total_amount: bookingState.totalAmount,
-          status: 'pending',
-          payment_status: 'pending',
-        })
-        .select()
-        .single();
+        },
+      });
 
       if (error) throw error;
 
-      navigate(`/booking/${booking.id}/summary`);
+      toast({
+        title: "Booking created",
+        description: "Please continue with guest information",
+      });
+
+      navigate(`/booking/${data.booking.id}/summary`);
     } catch (error: any) {
       console.error("Error creating booking:", error);
       toast({

@@ -157,6 +157,19 @@ serve(async (req) => {
 
     console.log('Payment processed successfully:', payment.id);
 
+    // Send booking confirmation email if payment is completed
+    if (paymentStatus === 'completed') {
+      try {
+        await supabase.functions.invoke('send-booking-confirmation', {
+          body: { booking_id: booking_id }
+        });
+        console.log('Confirmation email sent for booking:', booking_id);
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't fail the payment if email fails
+      }
+    }
+
     return new Response(
       JSON.stringify({ 
         payment,

@@ -2,39 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { CreditCard, Smartphone, Banknote, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
-import { getSafeErrorMessage, validateLuhn } from "@/lib/errorUtils";
-
-// Validation schemas for payment inputs
-const upiSchema = z.object({
-  upiId: z.string()
-    .min(3, "UPI ID must be at least 3 characters")
-    .max(100, "UPI ID is too long")
-    .regex(/^[\w.\-]+@[\w]+$/, "Invalid UPI ID format (e.g., user@bank)"),
-});
-
-const cardSchema = z.object({
-  cardNumber: z.string()
-    .regex(/^\d{13,19}$/, "Card number must be 13-19 digits")
-    .refine(validateLuhn, "Invalid card number"),
-  cardExpiry: z.string()
-    .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Expiry must be in MM/YY format")
-    .refine((val) => {
-      const [month, year] = val.split('/').map(Number);
-      const expiry = new Date(2000 + year, month - 1);
-      return expiry > new Date();
-    }, "Card has expired"),
-  cvv: z.string()
-    .regex(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
-});
+import PaymentForm from "@/components/PaymentForm";
+import { getSafeErrorMessage } from "@/lib/errorUtils";
 
 export default function Payment() {
   const { bookingId } = useParams();
@@ -44,13 +18,6 @@ export default function Payment() {
   const [booking, setBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<string>("UPI");
-  
-  // Payment form states
-  const [upiId, setUpiId] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvv, setCardCvv] = useState("");
 
   useEffect(() => {
     fetchBookingDetails();
@@ -78,90 +45,46 @@ export default function Payment() {
     }
   };
 
-  const handlePayment = async () => {
-    // Validate inputs based on payment method
-    try {
-      if (paymentMethod === "UPI") {
-        const result = upiSchema.safeParse({ upiId: upiId.trim() });
-        if (!result.success) {
-          toast({
-            title: "Validation Error",
-            description: result.error.errors[0].message,
-            variant: "destructive",
-          });
-          return;
-        }
-      } else if (paymentMethod === "Credit" || paymentMethod === "Debit") {
-        const result = cardSchema.safeParse({
-          cardNumber: cardNumber.replace(/\s/g, ''),
-          cardExpiry: cardExpiry.trim(),
-          cvv: cardCvv.trim(),
-        });
-        if (!result.success) {
-          toast({
-            title: "Validation Error",
-            description: result.error.errors[0].message,
-            variant: "destructive",
-          });
-          return;
-        }
-      }
-    } catch (validationError) {
-      toast({
-        title: "Validation Error",
-        description: "Please check your payment details and try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handlePayment = async (paymentMethod: string, paymentDetails: any) => {
     try {
       setProcessing(true);
 
-      // Create payment record
-      const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      // Get auth session
+      const { data: { session } } = await supabase.auth.getSession();
       
-      // Sanitize and limit data stored in payment_details
-      const paymentDetails = paymentMethod === "UPI"
-        ? { upiId: upiId.trim().slice(0, 100) }
-        : {
-            cardLast4: cardNumber.replace(/\s/g, '').slice(-4),
-            cardType: paymentMethod === "Credit" ? "Credit Card" : "Debit Card",
-          };
-      
-      const { error: paymentError } = await supabase
-        .from("payments")
-        .insert({
-          booking_id: bookingId!,
-          amount: booking.total_amount,
-          payment_method: paymentMethod,
-          payment_status: paymentMethod === "Cash" ? "pending" : "success",
-          transaction_id: transactionId,
-          payment_details: paymentDetails,
+      if (!session) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to complete payment",
+          variant: "destructive",
         });
+        navigate("/auth");
+        return;
+      }
 
-      if (paymentError) throw paymentError;
+      // Call process-payment edge function
+      const { data, error } = await supabase.functions.invoke("process-payment", {
+        body: {
+          booking_id: bookingId,
+          payment_method: paymentMethod,
+          payment_details: paymentDetails,
+        },
+      });
 
-      // Update booking status
-      const { error: bookingError } = await supabase
-        .from("bookings")
-        .update({
-          payment_status: paymentMethod === "Cash" ? "pending" : "paid",
-          status: paymentMethod === "Cash" ? "pending" : "confirmed",
-        })
-        .eq("id", bookingId!);
-
-      if (bookingError) throw bookingError;
+      if (error) throw error;
 
       toast({
-        title: "Payment successful!",
-        description: "Your booking has been confirmed",
+        title: "Payment Successful",
+        description: paymentMethod === "cash" 
+          ? "Your booking is confirmed. Please pay at the hotel during check-in."
+          : "Your payment has been processed successfully",
       });
 
       navigate(`/booking/${bookingId}/confirmation`);
     } catch (error: any) {
+      console.error("Payment error:", error);
       toast({
-        title: "Payment failed",
+        title: "Payment Failed",
         description: getSafeErrorMessage(error),
         variant: "destructive",
       });
@@ -192,158 +115,45 @@ export default function Payment() {
       
       <main className="container mx-auto px-4 py-8 mt-20 max-w-2xl">
         <div className="mb-8">
-          <h1 className="font-serif text-4xl font-bold mb-2">Payment</h1>
-          <p className="text-muted-foreground">Complete your booking by making a payment</p>
+          <h1 className="font-serif text-4xl font-bold mb-2">Complete Payment</h1>
+          <p className="text-muted-foreground">Choose your payment method and complete your booking</p>
         </div>
 
-        {/* Amount Summary */}
-        <Card className="mb-6 border-primary">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-center">
-              <span className="text-lg">Total Amount</span>
-              <span className="text-3xl font-bold text-primary">
-                ₹{booking.total_amount.toLocaleString()}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Payment Method Selection */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Select Payment Method</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 cursor-pointer">
-                  <RadioGroupItem value="UPI" id="upi" />
-                  <Label htmlFor="upi" className="flex items-center gap-3 cursor-pointer flex-1">
-                    <Smartphone className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">UPI</span>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 cursor-pointer">
-                  <RadioGroupItem value="Credit" id="credit" />
-                  <Label htmlFor="credit" className="flex items-center gap-3 cursor-pointer flex-1">
-                    <CreditCard className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">Credit Card</span>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 cursor-pointer">
-                  <RadioGroupItem value="Debit" id="debit" />
-                  <Label htmlFor="debit" className="flex items-center gap-3 cursor-pointer flex-1">
-                    <CreditCard className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">Debit Card</span>
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 cursor-pointer">
-                  <RadioGroupItem value="Cash" id="cash" />
-                  <Label htmlFor="cash" className="flex items-center gap-3 cursor-pointer flex-1">
-                    <Banknote className="h-5 w-5 text-primary" />
-                    <span className="font-semibold">Pay at Hotel (Cash)</span>
-                  </Label>
-                </div>
+        <div className="space-y-6">
+          {/* Total Amount */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Booking Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Room Rate × {booking.num_nights} nights</span>
+                <span className="font-semibold">
+                  ₹{(booking.room_rate * booking.num_nights).toLocaleString()}
+                </span>
               </div>
-            </RadioGroup>
-          </CardContent>
-        </Card>
-
-        {/* Payment Details Form */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Payment Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {paymentMethod === "UPI" && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="upiId">UPI ID</Label>
-                  <Input
-                    id="upiId"
-                    placeholder="yourname@upi"
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    maxLength={100}
-                  />
-                </div>
+              
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Taxes (12% GST)</span>
+                <span className="font-semibold">₹{booking.taxes.toLocaleString()}</span>
               </div>
-            )}
-
-            {(paymentMethod === "Credit" || paymentMethod === "Debit") && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="cardNumber">Card Number</Label>
-                  <Input
-                    id="cardNumber"
-                    placeholder="1234 5678 9012 3456"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim())}
-                    maxLength={19}
-                  />
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="cardExpiry">Expiry Date</Label>
-                    <Input
-                      id="cardExpiry"
-                      placeholder="MM/YY"
-                      value={cardExpiry}
-                      onChange={(e) => {
-                        let value = e.target.value.replace(/\D/g, "");
-                        if (value.length >= 2) {
-                          value = value.slice(0, 2) + "/" + value.slice(2, 4);
-                        }
-                        setCardExpiry(value);
-                      }}
-                      maxLength={5}
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="cardCvv">CVV</Label>
-                    <Input
-                      id="cardCvv"
-                      type="password"
-                      placeholder="123"
-                      value={cardCvv}
-                      onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, ""))}
-                      maxLength={4}
-                    />
-                  </div>
-                </div>
+              
+              <Separator />
+              
+              <div className="flex justify-between text-lg">
+                <span className="font-bold">Total Amount</span>
+                <span className="font-bold text-primary">₹{booking.total_amount.toLocaleString()}</span>
               </div>
-            )}
+            </CardContent>
+          </Card>
 
-            {paymentMethod === "Cash" && (
-              <div className="p-4 bg-accent/20 rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  You can pay in cash at the hotel during check-in. Your booking will be confirmed once you complete this step.
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Button
-          onClick={handlePayment}
-          size="lg"
-          className="w-full"
-          disabled={processing}
-        >
-          {processing ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Processing Payment...
-            </>
-          ) : (
-            `Confirm and Pay ₹${booking.total_amount.toLocaleString()}`
-          )}
-        </Button>
+          {/* Payment Form */}
+          <PaymentForm
+            amount={booking.total_amount}
+            onSubmit={handlePayment}
+            loading={processing}
+          />
+        </div>
       </main>
 
       <Footer />
