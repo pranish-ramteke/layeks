@@ -331,6 +331,8 @@ const RoomTypes = () => {
                 <TableHead>Hotel</TableHead>
                 <TableHead>Price/Night</TableHead>
                 <TableHead>Max Guests</TableHead>
+                <TableHead>Images</TableHead>
+                <TableHead>Amenities</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -341,6 +343,28 @@ const RoomTypes = () => {
                   <TableCell>{getHotelName(roomType.hotel_id)}</TableCell>
                   <TableCell>₹{roomType.base_price_per_night}</TableCell>
                   <TableCell>{roomType.max_guests}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      {roomType.images?.slice(0, 2).map((img: string, idx: number) => (
+                        <img key={idx} src={img} alt="" className="w-8 h-8 object-cover rounded" />
+                      ))}
+                      {(roomType.images?.length || 0) > 2 && (
+                        <span className="text-xs text-muted-foreground">+{roomType.images.length - 2}</span>
+                      )}
+                      {(!roomType.images || roomType.images.length === 0) && '-'}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1 max-w-[200px]">
+                      {roomType.amenities?.slice(0, 2).map((amenity: string, idx: number) => (
+                        <span key={idx} className="text-xs bg-muted px-2 py-1 rounded">{amenity}</span>
+                      ))}
+                      {(roomType.amenities?.length || 0) > 2 && (
+                        <span className="text-xs text-muted-foreground">+{roomType.amenities.length - 2}</span>
+                      )}
+                      {(!roomType.amenities || roomType.amenities.length === 0) && '-'}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" onClick={() => openEditDialog(roomType)}>
                       <Pencil className="h-4 w-4" />

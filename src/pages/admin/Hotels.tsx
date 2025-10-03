@@ -289,6 +289,8 @@ const Hotels = () => {
                 <TableHead>Address</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Images</TableHead>
+                <TableHead>Amenities</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -299,6 +301,28 @@ const Hotels = () => {
                   <TableCell>{hotel.address || '-'}</TableCell>
                   <TableCell>{hotel.phone || '-'}</TableCell>
                   <TableCell>{hotel.email || '-'}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      {hotel.images?.slice(0, 2).map((img: string, idx: number) => (
+                        <img key={idx} src={img} alt="" className="w-8 h-8 object-cover rounded" />
+                      ))}
+                      {(hotel.images?.length || 0) > 2 && (
+                        <span className="text-xs text-muted-foreground">+{hotel.images.length - 2}</span>
+                      )}
+                      {(!hotel.images || hotel.images.length === 0) && '-'}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1 max-w-[200px]">
+                      {hotel.amenities?.slice(0, 2).map((amenity: string, idx: number) => (
+                        <span key={idx} className="text-xs bg-muted px-2 py-1 rounded">{amenity}</span>
+                      ))}
+                      {(hotel.amenities?.length || 0) > 2 && (
+                        <span className="text-xs text-muted-foreground">+{hotel.amenities.length - 2}</span>
+                      )}
+                      {(!hotel.amenities || hotel.amenities.length === 0) && '-'}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" onClick={() => openEditDialog(hotel)}>
                       <Pencil className="h-4 w-4" />
