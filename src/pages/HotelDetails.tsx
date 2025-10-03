@@ -202,136 +202,120 @@ export default function HotelDetails() {
       <Header />
       
       <main className="container mx-auto px-4 py-8 mt-20">
-        {/* Hotel Header */}
-        <div className="mb-8">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{hotel.name}</h1>
-          <div className="flex flex-wrap gap-4 text-muted-foreground">
-            {hotel.address && (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                <span>{hotel.address}</span>
+        {/* Two Column Layout */}
+        <div className="grid lg:grid-cols-3 gap-8 mb-8">
+          {/* Left Column - Hotel Details */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Hotel Header */}
+            <div>
+              <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">{hotel.name}</h1>
+              <div className="flex flex-wrap gap-4 text-muted-foreground">
+                {hotel.address && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    <span>{hotel.address}</span>
+                  </div>
+                )}
+                {hotel.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4" />
+                    <span>{hotel.phone}</span>
+                  </div>
+                )}
+                {hotel.email && (
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    <span>{hotel.email}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Hotel Images */}
+            {hotel.images && hotel.images.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <img
+                  src={hotel.images[0]}
+                  alt={hotel.name}
+                  className="w-full h-96 object-cover rounded-lg"
+                />
+                {hotel.images[1] && (
+                  <div className="grid grid-cols-2 gap-4">
+                    {hotel.images.slice(1, 5).map((img: string, idx: number) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`${hotel.name} ${idx + 2}`}
+                        className="w-full h-44 object-cover rounded-lg"
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
-            {hotel.phone && (
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                <span>{hotel.phone}</span>
-              </div>
-            )}
-            {hotel.email && (
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                <span>{hotel.email}</span>
-              </div>
+
+            {/* Description */}
+            {hotel.description && (
+              <Card>
+                <CardContent className="p-6">
+                  <h2 className="font-serif text-2xl font-bold mb-4">About This Hotel</h2>
+                  <p className="text-muted-foreground leading-relaxed">{hotel.description}</p>
+                </CardContent>
+              </Card>
             )}
           </div>
-        </div>
 
-        {/* Hotel Images */}
-        {hotel.images && hotel.images.length > 0 && (
-          <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <img
-              src={hotel.images[0]}
-              alt={hotel.name}
-              className="w-full h-96 object-cover rounded-lg"
-            />
-            {hotel.images[1] && (
-              <div className="grid grid-cols-2 gap-4">
-                {hotel.images.slice(1, 5).map((img: string, idx: number) => (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt={`${hotel.name} ${idx + 2}`}
-                    className="w-full h-44 object-cover rounded-lg"
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Description */}
-        {hotel.description && (
-          <Card className="mb-8">
-            <CardContent className="p-6">
-              <h2 className="font-serif text-2xl font-bold mb-4">About This Hotel</h2>
-              <p className="text-muted-foreground leading-relaxed">{hotel.description}</p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Booking Widget */}
-        <Card className={`mb-8 sticky top-20 z-10 shadow-warm transition-all duration-300 ${
-          isScrolled ? 'bg-background/95 backdrop-blur' : ''
-        }`}>
-          <CardContent className={`transition-all duration-300 ${
-            isScrolled ? 'p-3' : 'p-6'
-          }`}>
-            {!isScrolled ? (
-              <>
-                <h2 className="font-serif text-2xl font-bold mb-6">Book Your Stay</h2>
+          {/* Right Column - Booking Widget */}
+          <div className="lg:col-span-1">
+            <Card className={`sticky top-20 z-10 shadow-warm transition-all duration-500 ${
+              isScrolled ? 'bg-background/95 backdrop-blur' : ''
+            }`}>
+              <CardContent className={`transition-all duration-500 ${
+                isScrolled ? 'p-4' : 'p-6'
+              }`}>
+                <h2 className={`font-serif font-bold mb-6 transition-all duration-500 ${
+                  isScrolled ? 'text-lg' : 'text-2xl'
+                }`}>Book Your Stay</h2>
                 
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Check-in & Check-out</label>
+                    <label className={`block font-medium mb-2 transition-all duration-500 ${
+                      isScrolled ? 'text-xs' : 'text-sm'
+                    }`}>Check-in & Check-out</label>
                     <DateRangePicker date={dateRange} onDateChange={handleDateChange} />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium mb-2">Number of Guests</label>
+                    <label className={`block font-medium mb-2 transition-all duration-500 ${
+                      isScrolled ? 'text-xs' : 'text-sm'
+                    }`}>Number of Guests</label>
                     <GuestCounter guests={guests} onGuestsChange={setGuests} />
                   </div>
-                </div>
 
-                <Button
-                  onClick={handleCheckAvailability}
-                  disabled={checkingAvailability || !dateRange?.from || !dateRange?.to}
-                  className="w-full"
-                  size="lg"
-                >
-                  {checkingAvailability ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Checking Availability...
-                    </>
-                  ) : (
-                    "Check Availability"
-                  )}
-                </Button>
-              </>
-            ) : (
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground text-xs">Dates:</span>
-                  <DateRangePicker date={dateRange} onDateChange={handleDateChange} />
+                  <Button
+                    onClick={handleCheckAvailability}
+                    disabled={checkingAvailability || !dateRange?.from || !dateRange?.to}
+                    className="w-full transition-all duration-500"
+                    size={isScrolled ? "default" : "lg"}
+                  >
+                    {checkingAvailability ? (
+                      <>
+                        <Loader2 className={`animate-spin transition-all duration-500 ${
+                          isScrolled ? 'mr-1 h-3 w-3' : 'mr-2 h-4 w-4'
+                        }`} />
+                        {isScrolled ? "Checking..." : "Checking Availability..."}
+                      </>
+                    ) : (
+                      isScrolled ? "Check" : "Check Availability"
+                    )}
+                  </Button>
                 </div>
-                
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground text-xs">Guests:</span>
-                  <GuestCounter guests={guests} onGuestsChange={setGuests} />
-                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
-                <Button
-                  onClick={handleCheckAvailability}
-                  disabled={checkingAvailability || !dateRange?.from || !dateRange?.to}
-                  size="sm"
-                  className="ml-auto"
-                >
-                  {checkingAvailability ? (
-                    <>
-                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                      Checking...
-                    </>
-                  ) : (
-                    "Check"
-                  )}
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Available Rooms */}
+        {/* Available Rooms - Full Width Below */}
         {showRooms && roomTypes.length > 0 && (
           <div ref={roomsRef}>
             <h2 className="font-serif text-3xl font-bold mb-6">Available Rooms</h2>
