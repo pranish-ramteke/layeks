@@ -261,7 +261,7 @@ export default function HotelDetails() {
         )}
 
         {/* Booking Widget */}
-        <Card className={`mb-8 sticky top-24 z-10 shadow-warm transition-all duration-300 ${
+        <Card className={`mb-8 sticky top-20 z-10 shadow-warm transition-all duration-300 ${
           isScrolled ? 'bg-background/95 backdrop-blur' : ''
         }`}>
           <CardContent className={`transition-all duration-300 ${
