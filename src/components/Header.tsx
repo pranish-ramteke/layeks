@@ -55,18 +55,20 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          <a href="#restaurant" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <a href="/#restaurant" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
             Restaurants
           </a>
-          <a href="#suvam" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            Hotel Suvam
+          <a href="/#suvam" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+            Hotels
           </a>
-          <a href="#atithi" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            Hotel Atithi
-          </a>
-          <a href="#events" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <a href="/#events" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
             Events
           </a>
+          {user && (
+            <a href="/my-bookings" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              My Bookings
+            </a>
+          )}
         </div>
         
         <div className="flex items-center gap-2">
@@ -119,45 +121,31 @@ const Header = () => {
             <SheetContent side="right" className="w-64">
               <div className="flex flex-col gap-6 mt-8">
                 <a 
-                  href="#restaurant" 
+                  href="/#restaurant" 
                   className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('restaurant')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
                 >
                   Restaurants
                 </a>
                 <a 
-                  href="#suvam" 
+                  href="/#suvam" 
                   className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('suvam')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
                 >
-                  Hotel Suvam
+                  Hotels
                 </a>
                 <a 
-                  href="#atithi" 
+                  href="/#events" 
                   className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('suvam')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  Hotel Atithi
-                </a>
-                <a 
-                  href="#events" 
-                  className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('events')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
                 >
                   Events
                 </a>
+                {user && (
+                  <a 
+                    href="/my-bookings" 
+                    className="text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+                  >
+                    My Bookings
+                  </a>
+                )}
               </div>
             </SheetContent>
           </Sheet>
