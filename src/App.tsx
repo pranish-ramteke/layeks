@@ -9,6 +9,7 @@ import BookingSummary from "./pages/BookingSummary";
 import GuestInfo from "./pages/GuestInfo";
 import Payment from "./pages/Payment";
 import Confirmation from "./pages/Confirmation";
+import Auth from "./pages/Auth";
 import AdminLogin from "./pages/AdminLogin";
 import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/booking/:bookingId/payment" element={<Payment />} />
           <Route path="/booking/:bookingId/confirmation" element={<Confirmation />} />
           
+          <Route path="/auth" element={<Auth />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
