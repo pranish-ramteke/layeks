@@ -11,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 
 const Header = () => {
   const [user, setUser] = useState<any>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +26,15 @@ const Header = () => {
     });
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleLogout = async () => {
@@ -43,10 +53,10 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft">
-      <nav className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft transition-all duration-300 ${isScrolled ? 'py-2' : ''}`}>
+      <nav className={`container mx-auto px-4 flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-14 md:h-16' : 'h-16 md:h-20'}`}>
         <div className="flex items-center gap-2">
-          <img src={layeksLogo} alt="Layek's Logo" className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover" />
+          <img src={layeksLogo} alt="Layek's Logo" className={`rounded-full object-cover transition-all duration-300 ${isScrolled ? 'h-7 w-7 md:h-8 md:w-8' : 'h-8 w-8 md:h-10 md:w-10'}`} />
           <div>
             <h1 className="font-serif text-lg md:text-xl font-bold text-foreground">Layek's</h1>
             <p className="text-xs text-muted-foreground hidden sm:block">Decades of Hospitality</p>
