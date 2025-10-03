@@ -31,7 +31,7 @@ const Index = () => {
           
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <HotelCard
-              id="hotel-suvam-1"
+              id="11111111-1111-1111-1111-111111111111"
               name="Hotel Suvam"
               tagline="Your Trusted Home Since 2010"
               description="Experience time-tested hospitality at our established property. Hotel Suvam offers comfortable accommodations with modern amenities while maintaining its classic charm."
@@ -45,7 +45,7 @@ const Index = () => {
             />
             
             <HotelCard
-              id="hotel-atithi-1"
+              id="22222222-2222-2222-2222-222222222222"
               name="Hotel Atithi"
               tagline="Modern Comfort, Traditional Warmth"
               description="Discover our newest property that blends contemporary design with warm Indian hospitality. Perfect for both business and leisure travelers."
