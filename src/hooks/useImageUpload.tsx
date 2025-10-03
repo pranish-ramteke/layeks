@@ -21,16 +21,6 @@ export const useImageUpload = () => {
         return null;
       }
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Image must be less than 5MB",
-          variant: "destructive",
-        });
-        return null;
-      }
-
       // Create unique filename
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;

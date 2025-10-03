@@ -64,7 +64,7 @@ export const ImageUploadInput = ({ onImageAdded, label = "Add Image" }: ImageUpl
             />
             {uploading && <Loader2 className="h-4 w-4 animate-spin" />}
           </div>
-          <p className="text-xs text-muted-foreground">Max file size: 5MB. Supported: JPG, PNG, WEBP</p>
+          <p className="text-xs text-muted-foreground">Supported: JPG, PNG, WEBP</p>
         </TabsContent>
         
         <TabsContent value="url" className="space-y-2">
