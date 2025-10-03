@@ -11,6 +11,7 @@ import { getSafeErrorMessage } from "@/lib/errorUtils";
 import { Plus, Pencil, Trash2, X, ImagePlus, Package } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ImageUploadInput } from "@/components/ImageUploadInput";
 
 interface RoomType {
   id: string;
@@ -42,7 +43,6 @@ const RoomTypes = () => {
     images: [] as string[],
     amenities: [] as string[],
   });
-  const [newImage, setNewImage] = useState("");
   const [newAmenity, setNewAmenity] = useState("");
   const { toast } = useToast();
 
@@ -123,7 +123,6 @@ const RoomTypes = () => {
 
   const resetForm = () => {
     setFormData({ hotel_id: "", name: "", description: "", base_price_per_night: "", max_guests: "2", images: [], amenities: [] });
-    setNewImage("");
     setNewAmenity("");
     setEditingRoomType(null);
     setIsDialogOpen(false);
@@ -143,11 +142,8 @@ const RoomTypes = () => {
     setIsDialogOpen(true);
   };
 
-  const addImage = () => {
-    if (newImage.trim()) {
-      setFormData({ ...formData, images: [...formData.images, newImage.trim()] });
-      setNewImage("");
-    }
+  const addImage = (imageUrl: string) => {
+    setFormData({ ...formData, images: [...formData.images, imageUrl] });
   };
 
   const removeImage = (index: number) => {
@@ -254,18 +250,7 @@ const RoomTypes = () => {
                       <ImagePlus className="h-5 w-5" />
                       <h3 className="font-semibold text-lg">Images</h3>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-3">Add image URLs for room photos</p>
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Image URL"
-                        value={newImage}
-                        onChange={(e) => setNewImage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
-                      />
-                      <Button type="button" onClick={addImage} size="sm">
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <ImageUploadInput onImageAdded={addImage} label="Add room images" />
                     <div className="space-y-2 mt-3 max-h-[200px] overflow-y-auto">
                       {formData.images.map((img, idx) => (
                         <div key={idx} className="flex items-start gap-2 p-2 border rounded">
