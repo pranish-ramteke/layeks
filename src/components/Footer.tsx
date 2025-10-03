@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src={layeksLogo} alt="Layek's Logo" className="h-10 w-10 rounded-full object-cover scale-150" />
+              <img src={layeksLogo} alt="Layek's Logo" className="h-10 w-10 rounded-full object-cover" />
               <div>
                 <h3 className="font-serif text-xl font-bold">Layek's</h3>
                 <p className="text-sm text-background/70">Decades of Hospitality</p>
