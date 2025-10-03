@@ -254,48 +254,72 @@ export default function HotelDetails() {
 
         {/* Booking Widget */}
         <Card className={`mb-8 sticky top-24 z-10 shadow-warm transition-all duration-300 ${
-          isScrolled ? 'scale-95 opacity-90' : ''
+          isScrolled ? 'bg-background/95 backdrop-blur' : ''
         }`}>
           <CardContent className={`transition-all duration-300 ${
-            isScrolled ? 'p-4' : 'p-6'
+            isScrolled ? 'p-3' : 'p-6'
           }`}>
-            <h2 className={`font-serif font-bold transition-all duration-300 ${
-              isScrolled ? 'text-xl mb-3' : 'text-2xl mb-6'
-            }`}>Book Your Stay</h2>
-            
-            <div className={`grid md:grid-cols-2 gap-4 transition-all duration-300 ${
-              isScrolled ? 'mb-2' : 'mb-4'
-            }`}>
-              <div>
-                <label className={`block text-sm font-medium transition-all duration-300 ${
-                  isScrolled ? 'mb-1 text-xs' : 'mb-2'
-                }`}>Check-in & Check-out</label>
-                <DateRangePicker date={dateRange} onDateChange={handleDateChange} />
-              </div>
-              
-              <div>
-                <label className={`block text-sm font-medium transition-all duration-300 ${
-                  isScrolled ? 'mb-1 text-xs' : 'mb-2'
-                }`}>Number of Guests</label>
-                <GuestCounter guests={guests} onGuestsChange={setGuests} />
-              </div>
-            </div>
+            {!isScrolled ? (
+              <>
+                <h2 className="font-serif text-2xl font-bold mb-6">Book Your Stay</h2>
+                
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Check-in & Check-out</label>
+                    <DateRangePicker date={dateRange} onDateChange={handleDateChange} />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Number of Guests</label>
+                    <GuestCounter guests={guests} onGuestsChange={setGuests} />
+                  </div>
+                </div>
 
-            <Button
-              onClick={handleCheckAvailability}
-              disabled={checkingAvailability || !dateRange?.from || !dateRange?.to}
-              className="w-full"
-              size={isScrolled ? "default" : "lg"}
-            >
-              {checkingAvailability ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {isScrolled ? "Checking..." : "Checking Availability..."}
-                </>
-              ) : (
-                isScrolled ? "Check" : "Check Availability"
-              )}
-            </Button>
+                <Button
+                  onClick={handleCheckAvailability}
+                  disabled={checkingAvailability || !dateRange?.from || !dateRange?.to}
+                  className="w-full"
+                  size="lg"
+                >
+                  {checkingAvailability ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Checking Availability...
+                    </>
+                  ) : (
+                    "Check Availability"
+                  )}
+                </Button>
+              </>
+            ) : (
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground text-xs">Dates:</span>
+                  <DateRangePicker date={dateRange} onDateChange={handleDateChange} />
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground text-xs">Guests:</span>
+                  <GuestCounter guests={guests} onGuestsChange={setGuests} />
+                </div>
+
+                <Button
+                  onClick={handleCheckAvailability}
+                  disabled={checkingAvailability || !dateRange?.from || !dateRange?.to}
+                  size="sm"
+                  className="ml-auto"
+                >
+                  {checkingAvailability ? (
+                    <>
+                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                      Checking...
+                    </>
+                  ) : (
+                    "Check"
+                  )}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
