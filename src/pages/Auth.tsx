@@ -23,7 +23,7 @@ const Auth = () => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const from = (location.state as any)?.from || "/";
+        const from = (location.state as any)?.from || "/booking-summary";
         navigate(from);
       }
     };
@@ -55,7 +55,7 @@ const Auth = () => {
           description: "Your account has been created successfully.",
         });
 
-        const from = (location.state as any)?.from || "/";
+        const from = (location.state as any)?.from || "/booking-summary";
         navigate(from);
       } else {
         // Email confirmation required
@@ -92,7 +92,7 @@ const Auth = () => {
         description: "You have successfully signed in.",
       });
 
-      const from = (location.state as any)?.from || "/";
+      const from = (location.state as any)?.from || "/booking-summary";
       navigate(from);
     } catch (error) {
       toast({
