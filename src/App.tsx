@@ -9,6 +9,12 @@ import BookingSummary from "./pages/BookingSummary";
 import GuestInfo from "./pages/GuestInfo";
 import Payment from "./pages/Payment";
 import Confirmation from "./pages/Confirmation";
+import AdminLogin from "./pages/AdminLogin";
+import AdminLayout from "./components/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import Hotels from "./pages/admin/Hotels";
+import RoomTypes from "./pages/admin/RoomTypes";
+import Bookings from "./pages/admin/Bookings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +32,15 @@ const App = () => (
           <Route path="/booking/:bookingId/guest-info" element={<GuestInfo />} />
           <Route path="/booking/:bookingId/payment" element={<Payment />} />
           <Route path="/booking/:bookingId/confirmation" element={<Confirmation />} />
+          
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="hotels" element={<Hotels />} />
+            <Route path="room-types" element={<RoomTypes />} />
+            <Route path="bookings" element={<Bookings />} />
+          </Route>
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
