@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { getSafeErrorMessage } from "@/lib/errorUtils";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, X, ImagePlus, Package } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -18,6 +18,8 @@ interface Hotel {
   address: string | null;
   phone: string | null;
   email: string | null;
+  images: string[] | null;
+  amenities: string[] | null;
 }
 
 const Hotels = () => {
@@ -30,7 +32,11 @@ const Hotels = () => {
     address: "",
     phone: "",
     email: "",
+    images: [] as string[],
+    amenities: [] as string[],
   });
+  const [newImage, setNewImage] = useState("");
+  const [newAmenity, setNewAmenity] = useState("");
   const { toast } = useToast();
 
   const fetchHotels = async () => {
@@ -89,7 +95,9 @@ const Hotels = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: "", description: "", address: "", phone: "", email: "" });
+    setFormData({ name: "", description: "", address: "", phone: "", email: "", images: [], amenities: [] });
+    setNewImage("");
+    setNewAmenity("");
     setEditingHotel(null);
     setIsDialogOpen(false);
   };
@@ -102,8 +110,32 @@ const Hotels = () => {
       address: hotel.address || "",
       phone: hotel.phone || "",
       email: hotel.email || "",
+      images: hotel.images || [],
+      amenities: hotel.amenities || [],
     });
     setIsDialogOpen(true);
+  };
+
+  const addImage = () => {
+    if (newImage.trim()) {
+      setFormData({ ...formData, images: [...formData.images, newImage.trim()] });
+      setNewImage("");
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData({ ...formData, images: formData.images.filter((_, i) => i !== index) });
+  };
+
+  const addAmenity = () => {
+    if (newAmenity.trim()) {
+      setFormData({ ...formData, amenities: [...formData.amenities, newAmenity.trim()] });
+      setNewAmenity("");
+    }
+  };
+
+  const removeAmenity = (index: number) => {
+    setFormData({ ...formData, amenities: formData.amenities.filter((_, i) => i !== index) });
   };
 
   return (
@@ -120,57 +152,123 @@ const Hotels = () => {
               Add Hotel
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingHotel ? 'Edit Hotel' : 'Add New Hotel'}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-lg">Basic Information</h3>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name *</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={4}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Textarea
+                      id="address"
+                      value={formData.address}
+                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      rows={2}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  />
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ImagePlus className="h-5 w-5" />
+                      <h3 className="font-semibold text-lg">Images</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">Add image URLs for hotel photos</p>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Image URL"
+                        value={newImage}
+                        onChange={(e) => setNewImage(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
+                      />
+                      <Button type="button" onClick={addImage} size="sm">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="space-y-2 mt-3 max-h-[200px] overflow-y-auto">
+                      {formData.images.map((img, idx) => (
+                        <div key={idx} className="flex items-start gap-2 p-2 border rounded">
+                          <img src={img} alt="" className="w-16 h-16 object-cover rounded" />
+                          <p className="flex-1 text-sm break-all">{img}</p>
+                          <Button type="button" variant="ghost" size="sm" onClick={() => removeImage(idx)}>
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Package className="h-5 w-5" />
+                      <h3 className="font-semibold text-lg">Amenities</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-3">Add hotel amenities</p>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="e.g., Free WiFi, Pool, Gym"
+                        value={newAmenity}
+                        onChange={(e) => setNewAmenity(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addAmenity())}
+                      />
+                      <Button type="button" onClick={addAmenity} size="sm">
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {formData.amenities.map((amenity, idx) => (
+                        <div key={idx} className="flex items-center gap-1 bg-muted px-3 py-1 rounded-full">
+                          <span className="text-sm">{amenity}</span>
+                          <Button type="button" variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={() => removeAmenity(idx)}>
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex justify-end gap-2">
+
+              <div className="flex justify-end gap-2 pt-4 border-t">
                 <Button type="button" variant="outline" onClick={resetForm}>Cancel</Button>
                 <Button type="submit">{editingHotel ? 'Update' : 'Create'}</Button>
               </div>

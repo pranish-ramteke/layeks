@@ -15,6 +15,7 @@ import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import Hotels from "./pages/admin/Hotels";
 import RoomTypes from "./pages/admin/RoomTypes";
+import Rooms from "./pages/admin/Rooms";
 import Bookings from "./pages/admin/Bookings";
 import NotFound from "./pages/NotFound";
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="hotels" element={<Hotels />} />
             <Route path="room-types" element={<RoomTypes />} />
+            <Route path="rooms" element={<Rooms />} />
             <Route path="bookings" element={<Bookings />} />
           </Route>
           

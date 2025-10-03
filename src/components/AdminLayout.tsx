@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, useNavigate, NavLink, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Hotel, Bed, Calendar, LayoutDashboard, LogOut } from "lucide-react";
+import { Hotel, Bed, Calendar, LayoutDashboard, LogOut, DoorOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Sidebar,
@@ -22,6 +22,7 @@ const menuItems = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
   { title: "Hotels", url: "/admin/hotels", icon: Hotel },
   { title: "Room Types", url: "/admin/room-types", icon: Bed },
+  { title: "Rooms", url: "/admin/rooms", icon: DoorOpen },
   { title: "Bookings", url: "/admin/bookings", icon: Calendar },
 ];
 
