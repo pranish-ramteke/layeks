@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
@@ -33,6 +33,7 @@ export default function HotelDetails() {
   });
   const [guests, setGuests] = useState(bookingState.numGuests || 1);
   const [isScrolled, setIsScrolled] = useState(false);
+  const roomsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchHotelData();
@@ -40,13 +41,20 @@ export default function HotelDetails() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Shrink the booking box after scrolling 100px
-      setIsScrolled(window.scrollY > 100);
+      // Shrink the booking box only when scrolling to the rooms section
+      if (roomsRef.current && showRooms) {
+        const roomsTop = roomsRef.current.offsetTop;
+        const scrollPosition = window.scrollY + window.innerHeight / 2;
+        setIsScrolled(scrollPosition > roomsTop);
+      } else {
+        setIsScrolled(false);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial state
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [showRooms]);
 
   const fetchHotelData = async () => {
     try {
@@ -325,7 +333,7 @@ export default function HotelDetails() {
 
         {/* Available Rooms */}
         {showRooms && roomTypes.length > 0 && (
-          <div>
+          <div ref={roomsRef}>
             <h2 className="font-serif text-3xl font-bold mb-6">Available Rooms</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {roomTypes.map((roomType) => (
