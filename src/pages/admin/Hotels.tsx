@@ -11,6 +11,7 @@ import { Plus, Pencil, Trash2, X, ImagePlus, Package } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ImageUploadInput } from "@/components/ImageUploadInput";
+import { ImageGalleryManager } from "@/components/ImageGalleryManager";
 
 interface Hotel {
   id: string;
@@ -123,6 +124,10 @@ const Hotels = () => {
     setFormData({ ...formData, images: formData.images.filter((_, i) => i !== index) });
   };
 
+  const reorderImages = (newImages: string[]) => {
+    setFormData({ ...formData, images: newImages });
+  };
+
   const addAmenity = () => {
     if (newAmenity.trim()) {
       setFormData({ ...formData, amenities: [...formData.amenities, newAmenity.trim()] });
@@ -209,17 +214,16 @@ const Hotels = () => {
                       <h3 className="font-semibold text-lg">Images</h3>
                     </div>
                     <ImageUploadInput onImageAdded={addImage} label="Add hotel images" />
-                    <div className="space-y-2 mt-3 max-h-[200px] overflow-y-auto">
-                      {formData.images.map((img, idx) => (
-                        <div key={idx} className="flex items-start gap-2 p-2 border rounded">
-                          <img src={img} alt="" className="w-16 h-16 object-cover rounded" />
-                          <p className="flex-1 text-sm break-all">{img}</p>
-                          <Button type="button" variant="ghost" size="sm" onClick={() => removeImage(idx)}>
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
+                    {formData.images.length > 0 && (
+                      <div className="mt-4">
+                        <p className="text-sm text-muted-foreground mb-3">Drag to reorder images</p>
+                        <ImageGalleryManager
+                          images={formData.images}
+                          onReorder={reorderImages}
+                          onRemove={removeImage}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">

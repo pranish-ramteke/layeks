@@ -17,16 +17,20 @@ export const ImageUploadInput = ({ onImageAdded, label = "Add Image" }: ImageUpl
   const { uploadImage, uploading } = useImageUpload();
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-    const url = await uploadImage(file);
-    if (url) {
-      onImageAdded(url);
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+    // Upload all selected files
+    for (let i = 0; i < files.length; i++) {
+      const url = await uploadImage(files[i]);
+      if (url) {
+        onImageAdded(url);
       }
+    }
+    
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -58,13 +62,14 @@ export const ImageUploadInput = ({ onImageAdded, label = "Add Image" }: ImageUpl
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              multiple
               onChange={handleFileSelect}
               disabled={uploading}
               className="flex-1"
             />
             {uploading && <Loader2 className="h-4 w-4 animate-spin" />}
           </div>
-          <p className="text-xs text-muted-foreground">Supported: JPG, PNG, WEBP</p>
+          <p className="text-xs text-muted-foreground">Select multiple images at once. Supported: JPG, PNG, WEBP</p>
         </TabsContent>
         
         <TabsContent value="url" className="space-y-2">
