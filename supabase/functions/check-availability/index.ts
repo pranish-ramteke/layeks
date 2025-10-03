@@ -12,11 +12,11 @@ serve(async (req) => {
   }
 
   try {
-    const { hotel_id, check_in, check_out, num_guests } = await req.json();
+    const { hotel_id, check_in_date, check_out_date, num_guests } = await req.json();
 
-    console.log('Checking availability for:', { hotel_id, check_in, check_out, num_guests });
+    console.log('Checking availability for:', { hotel_id, check_in_date, check_out_date, num_guests });
 
-    if (!hotel_id || !check_in || !check_out || !num_guests) {
+    if (!hotel_id || !check_in_date || !check_out_date || !num_guests) {
       return new Response(
         JSON.stringify({ error: 'Missing required parameters' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -69,7 +69,7 @@ serve(async (req) => {
         .select('room_id')
         .in('room_id', roomIds)
         .in('status', ['confirmed', 'pending'])
-        .or(`and(check_in_date.lte.${check_out},check_out_date.gte.${check_in})`);
+        .or(`and(check_in_date.lte.${check_out_date},check_out_date.gte.${check_in_date})`);
 
       if (bookingsError) {
         console.error('Error checking bookings:', bookingsError);
@@ -85,8 +85,8 @@ serve(async (req) => {
           .from('room_availability')
           .select('price_override')
           .in('room_id', availableRooms.map(r => r.id))
-          .gte('date', check_in)
-          .lte('date', check_out)
+          .gte('date', check_in_date)
+          .lte('date', check_out_date)
           .eq('is_available', true)
           .limit(1)
           .single();
@@ -104,7 +104,10 @@ serve(async (req) => {
     console.log('Available room types:', availableRoomTypes);
 
     return new Response(
-      JSON.stringify({ available_room_types: availableRoomTypes }),
+      JSON.stringify({ 
+        available: availableRoomTypes.length > 0,
+        room_types: availableRoomTypes 
+      }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
