@@ -25,7 +25,7 @@ const SuvamRestaurantSection = () => {
   return <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Layek's Resturant</h2>
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Layek's Restaurant</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Traditional flavors in a comfortable setting, only at Hotel Suvam</p>
         </div>
         
