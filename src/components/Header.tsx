@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Flower, Phone, Menu, LogOut, User } from "lucide-react";
+import { Phone, Menu, LogOut, User } from "lucide-react";
+import layeksLogo from "@/assets/layeks-logo.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
@@ -45,9 +46,9 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-soft">
       <nav className="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Flower className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+          <img src={layeksLogo} alt="Layek's Logo" className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover" />
           <div>
-            <h1 className="font-serif text-lg md:text-xl font-bold text-foreground">The Layek's</h1>
+            <h1 className="font-serif text-lg md:text-xl font-bold text-foreground">Layek's</h1>
             <p className="text-xs text-muted-foreground hidden sm:block">Decades of Hospitality</p>
           </div>
         </div>

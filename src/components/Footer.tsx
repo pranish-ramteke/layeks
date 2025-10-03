@@ -1,4 +1,5 @@
-import { Flower, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
+import layeksLogo from "@/assets/layeks-logo.jpg";
 
 const Footer = () => {
   return (
@@ -7,9 +8,9 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Flower className="h-8 w-8 text-accent" />
+              <img src={layeksLogo} alt="Layek's Logo" className="h-10 w-10 rounded-full object-cover" />
               <div>
-                <h3 className="font-serif text-xl font-bold">The Layek's</h3>
+                <h3 className="font-serif text-xl font-bold">Layek's</h3>
                 <p className="text-sm text-background/70">Decades of Hospitality</p>
               </div>
             </div>
@@ -61,7 +62,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-background/20 pt-8 text-center text-sm text-background/60">
-          <p>&copy; {new Date().getFullYear()} The Layek's. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Layek's. All rights reserved.</p>
         </div>
       </div>
     </footer>
