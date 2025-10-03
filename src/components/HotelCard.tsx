@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, Star, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface HotelCardProps {
+  id: string;
   name: string;
   tagline: string;
   description: string;
@@ -11,7 +13,9 @@ interface HotelCardProps {
   isNew?: boolean;
 }
 
-const HotelCard = ({ name, tagline, description, image, features, isNew }: HotelCardProps) => {
+const HotelCard = ({ id, name, tagline, description, image, features, isNew }: HotelCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <Card className="overflow-hidden hover:shadow-warm transition-all duration-500 border-border group">
       <div className="relative h-80 md:h-96 overflow-hidden">
@@ -48,8 +52,11 @@ const HotelCard = ({ name, tagline, description, image, features, isNew }: Hotel
           ))}
         </div>
         
-        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-soft group">
-          Explore {name}
+        <Button 
+          onClick={() => navigate(`/hotels/${id}`)}
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-soft group"
+        >
+          Book Now
           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </Button>
       </CardContent>
