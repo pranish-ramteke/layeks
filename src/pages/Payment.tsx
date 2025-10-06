@@ -10,6 +10,12 @@ import { useToast } from "@/hooks/use-toast";
 import PaymentForm from "@/components/PaymentForm";
 import { getSafeErrorMessage } from "@/lib/errorUtils";
 
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 export default function Payment() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
@@ -45,7 +51,7 @@ export default function Payment() {
     }
   };
 
-  const handlePayment = async (paymentMethod: string, paymentDetails: any) => {
+  const handlePayment = async (paymentMethod: string) => {
     try {
       setProcessing(true);
 
@@ -62,25 +68,94 @@ export default function Payment() {
         return;
       }
 
-      // Call process-payment edge function
-      const { data, error } = await supabase.functions.invoke("process-payment", {
+      // Handle cash payment directly
+      if (paymentMethod === "cash") {
+        const { error } = await supabase.functions.invoke("process-payment", {
+          body: {
+            booking_id: bookingId,
+            payment_method: "cash",
+          },
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Booking Confirmed",
+          description: "Please pay in cash during check-in.",
+        });
+
+        navigate(`/booking/${bookingId}/confirmation`);
+        return;
+      }
+
+      // For UPI/Card - Create Razorpay order
+      const { data: orderData, error: orderError } = await supabase.functions.invoke("process-payment", {
         body: {
           booking_id: bookingId,
           payment_method: paymentMethod,
-          payment_details: paymentDetails,
         },
       });
 
-      if (error) throw error;
+      if (orderError) throw orderError;
 
-      toast({
-        title: "Payment Successful",
-        description: paymentMethod === "cash" 
-          ? "Your booking is confirmed. Please pay at the hotel during check-in."
-          : "Your payment has been processed successfully",
-      });
+      // Open Razorpay Checkout
+      const options = {
+        key: orderData.razorpay_key_id,
+        amount: booking.total_amount * 100, // Amount in paise
+        currency: "INR",
+        name: "Hotel Suvam & Atithi",
+        description: `Booking #${booking.booking_reference}`,
+        order_id: orderData.razorpay_order_id,
+        handler: async function (response: any) {
+          try {
+            // Verify payment
+            const { error: verifyError } = await supabase.functions.invoke("verify-payment", {
+              body: {
+                booking_id: bookingId,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              },
+            });
 
-      navigate(`/booking/${bookingId}/confirmation`);
+            if (verifyError) throw verifyError;
+
+            toast({
+              title: "Payment Successful",
+              description: "Your booking has been confirmed!",
+            });
+
+            navigate(`/booking/${bookingId}/confirmation`);
+          } catch (error: any) {
+            console.error("Payment verification error:", error);
+            toast({
+              title: "Payment Verification Failed",
+              description: getSafeErrorMessage(error),
+              variant: "destructive",
+            });
+          }
+        },
+        prefill: {
+          email: session.user.email,
+        },
+        theme: {
+          color: "#2563eb",
+        },
+        modal: {
+          ondismiss: function() {
+            setProcessing(false);
+            toast({
+              title: "Payment Cancelled",
+              description: "You can try again when ready.",
+              variant: "destructive",
+            });
+          }
+        }
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+      setProcessing(false);
     } catch (error: any) {
       console.error("Payment error:", error);
       toast({
@@ -88,7 +163,6 @@ export default function Payment() {
         description: getSafeErrorMessage(error),
         variant: "destructive",
       });
-    } finally {
       setProcessing(false);
     }
   };
